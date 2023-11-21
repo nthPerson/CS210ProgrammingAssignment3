@@ -24,12 +24,15 @@ public:
 //    }
 
     bool operator>(const Edge &otherEdge) const {
-//        return weight < otherEdge.weight;
-        return weight > otherEdge.weight;
+        // logic is reversed for use in min heap, smaller weight = higher priority
+        return weight < otherEdge.weight;
+//        return weight > otherEdge.weight;
     }
 
     bool operator<(const Edge &otherEdge) const {
-        return weight < otherEdge.weight;
+        // logic is reversed for use in min heap, greater weight = lower priority
+        return weight > otherEdge.weight;
+//        return weight < otherEdge.weight;
     }
 
     bool operator==(const Edge &otherEdge) const {
@@ -56,19 +59,23 @@ private:
     vector<vector<int>> adjacencyMatrix;
 
 public:
-    // constructor
+    // make a new graph with a given number of vertices, all weights are initialized to 0
     Graph(int vertices) : numVertices(vertices), adjacencyMatrix(vertices, vector<int>(vertices, 0)) {}
 
-    Graph(int vertices, int sampleGraph[][5]) : numVertices(vertices), adjacencyMatrix(vertices, vector<int>(vertices, 0)) {
-//        adjacencyMatrix(vertices, vector<int>(vertices, 0));
-        // convert sample graph to Graph type to allow for more flexibility for Prim's algo input
-        for (int i = 0; i < 5; ++i) {
-            for (int j = 0; j < 5; ++j) {
-                this->adjacencyMatrix[i][j] = sampleGraph[i][j];
-            }
-        }
-//        numVertices = 5;
+    // make a new graph from any 2D vector
+    Graph(const vector<vector<int>> &sampleGraph) {
+        numVertices = sampleGraph.size();
+        adjacencyMatrix = sampleGraph;
     }
+
+//    Graph(int vertices, int sampleGraph[][5]) : numVertices(vertices), adjacencyMatrix(vertices, vector<int>(vertices, 0)) {
+//        // convert sample graph to Graph type to allow for more flexibility for Prim's algo input
+//        for (int i = 0; i < 5; ++i) {
+//            for (int j = 0; j < 5; ++j) {
+//                this->adjacencyMatrix[i][j] = sampleGraph[i][j];
+//            }
+//        }
+//    }
 
     void addEdge(int startVertex, int endVertex, int weight) {
         adjacencyMatrix[startVertex][endVertex] = weight;
@@ -88,6 +95,16 @@ public:
 
     int getEdgeWeight(int row, int col) {
         return adjacencyMatrix[row][col];
+    }
+
+    vector<Edge> getVertexEdges(int vertex) {
+        vector<Edge> edges;
+        for (int i = 0; i < adjacencyMatrix.size(); ++i) {
+            if(adjacencyMatrix[vertex][i] != 0 && adjacencyMatrix[vertex][i] != INT_MAX) {
+                edges.push_back(Edge(adjacencyMatrix[vertex][i], vertex, i));
+            }
+        }
+        return edges;
     }
 
     void print() {
@@ -151,7 +168,8 @@ public:
 
     T getTop() {
         if (isEmpty()) {
-            cout << "Priority queue is empty, nothing to return" << endl;
+//            cout << "Priority queue is empty, nothing to return" << endl;
+            throw out_of_range("Priority queue is empty,");
         }
         return heap.front();
     }
@@ -165,7 +183,8 @@ public:
 
     void deleteTop() {
         if (isEmpty()) {
-            cout << "Priority queue is empty" <<  endl;
+//            cout << "Priority queue is empty" <<  endl;
+            throw out_of_range("Priority queue is empty,");
         }
         heap[0] = heap.back();
         heap.pop_back();
@@ -222,21 +241,32 @@ int main() {
 
     // convert sample adjacency matrix to vector to input into prims method
 
+    // convert given 2D array graph to 2D vector to test new generalized Graph constructor
+    vector<vector<int>> convertedSampleGraph(5, vector<int>(5));
+
+    for (int i = 0; i < 5; ++i) {
+        for (int j = 0; j < 5; ++j) {
+            convertedSampleGraph[i][j] = G[i][j];
+        }
+    }
 
     // test PriorityQueue and Graph
     PriorityQueue<Edge> *pqTest;
 
-    Graph *testGraph = new Graph(5, G);
+//    Graph *testGraph = new Graph(5, G);
+    Graph *testGraph = new Graph(convertedSampleGraph);
     Edge edge1(20, 1, 2);
     Edge edge2(20, 3, 4);
     Edge edge3(5, 5, 6);
     Edge edge4(10, 7, 8);
 
-    if (pqTest->isEmpty()) {
-        cout << "PQ is empty." << endl;
-    } else {
-        cout << "isEmpty does not work." << endl;
-    }
+    testGraph->print();
+
+//    if (pqTest->isEmpty()) {
+//        cout << "PQ is empty." << endl;
+//    } else {
+//        cout << "isEmpty does not work." << endl;
+//    }
 
     //test Edge::print()
 //    cout << "Edge1: " << endl;
