@@ -290,96 +290,52 @@ Graph createGraphFromMatrix(int (&twoDimensionalArray)[ROWS][COLS]) {
 
 int main() {
 
-    /* INSTRUCTIONS FOR USE:
-     * Step 1: Copy/paste the 2D array into indicated location (or wherever you want, you know how this works)
-     * Step 2: Pass your array as an argument to createGraphFromMatrix() method
-     * Step 3: Uncomment these two lines:
+    /* INSTRUCTIONS FOR USE (I'm hoping this will make things easier for you):
+     * Step 1: Uncomment these three lines:
+     *         int profMatrix[ENTER ARRAY][SIZE HERE] = { PASTE MATRIX HERE }
      *         Graph professorManjuGraph = createGraphFromMatrix()
      *         primsMST(professorManjuGraph)
-     * Step 4: Run the program and check the console for output
-     * step 5: Have a great day!
+     * Step 2: Copy/paste your 2D array into the indicated location and enter the size of the array in the declaration
+     * Step 3: Run the program and check the console for output
+     * step 4: Have a great day!
      * */
 
-    // Your 2D array can go here, if you'd like
-
-
-//    Graph professorManjuGraph = createGraphFromMatrix(/*YOUR 2D ARRAY GOES HERE*/);
-//    primsMST(professorManjuGraph);
-
-
+    // EXAMPLE USAGE
     int G[5][5] = { {0, 3, 65, 0, 0},
                     {3, 0, 85, 20, 45},
                     {65, 85, 0, 41, 77},
                     {0, 20, 41, 0, 51},
                     {0, 45, 77, 51, 0} };
-    Graph graph1 = createGraphFromMatrix(G);
-    primsMST(graph1);
+    Graph g = createGraphFromMatrix(G);
+    primsMST(g);
 
+    int exampleAdjMatrix[6][6] = {{0,  5,  0,  23, 0,  0},
+                                  {5,  0,  10, 41, 12, 30},
+                                  {0,  10, 0,  0,  8,  0},
+                                  {23, 41, 0,  0,  16, 14},
+                                  {0,  12, 8,  16, 0,  27},
+                                  {0,  30, 0,  14, 27, 0}};
+    Graph exampleGraph = createGraphFromMatrix(exampleAdjMatrix);
+    primsMST(exampleGraph);
 
-
-//    int G[5][5] = { {0, 3, 65, 0, 0},
-//                    {3, 0, 85, 20, 45},
-//                    {65, 85, 0, 41, 77},
-//                    {0, 20, 41, 0, 51},
-//                    {0, 45, 77, 51, 0} };
-
-
-    // convert given 2D array graph to 2D vector to construct Graph
-//    vector<vector<int>> *sampleMatrix(5, vector<int>(5));
-    vector<vector<int>> sampleMatrix(5, vector<int>(5));
-
-
-    for (int i = 0; i < 5; ++i) {
-        for (int j = 0; j < 5; ++j) {
-            sampleMatrix[i][j] = G[i][j];
-        }
-    }
-    auto *graph = new Graph(sampleMatrix);
-
-    cout << "Sample matrix output:" << endl;
-    primsMST(*graph);
-
-    // different adjacency matrix
-    int D[6][6] = { {0, 5, 0, 23, 0, 0},
-                    {5, 0, 10, 41, 12, 30},
-                    {0, 10, 0, 0, 8, 0},
-                    {23, 41, 0, 0, 16, 14},
-                    {0, 12, 8, 16, 0, 27},
-                    {0, 30, 0, 14, 27, 0} };
-    // convert to vector for construction of graph
-    vector<vector<int>> differentMatrix(6, vector<int>(6));
-    for (int i = 0; i < 6; ++i) {
-        for (int j = 0; j < 6; ++j) {
-            differentMatrix[i][j] = D[i][j];
-        }
-    }
-    auto *differentGraph = new Graph(differentMatrix);
-
-    cout << "Different matrix output:" << endl;
-    primsMST(*differentGraph);
-
-    // another test matrix
     int bigAdjMatrix[9][9] = { {0, 6, 0, 0, 14, 2, 0, 0, 0},
-                            {6, 0, 17, 0, 0, 12, 0, 0, 0},
-                            {0, 17, 0, 60, 0, 13, 41, 0, 0},
-                            {0, 0, 60, 0, 0, 0, 0, 0, 0},
-                            {14, 0, 0, 0, 0, 0, 0, 0, 4},
-                            {2, 12,13, 0, 0, 0, 0, 21, 0},
-                            {0, 0, 41, 0, 0, 0, 0, 17, 0},
-                            {0, 0, 0, 0, 0, 21, 17, 0, 0, },
-                            {0, 0, 0, 0, 4, 0, 0, 0, 0}};
-    vector<vector<int>> bigVectorMatrix(9, vector<int>(9));
-    for (int i = 0; i < 9; ++i) {
-        for (int j = 0; j < 9; ++j) {
-            bigVectorMatrix[i][j] = bigAdjMatrix[i][j];
-        }
-    }
-    auto *bigGraph = new Graph(bigVectorMatrix);
+                               {6, 0, 17, 0, 0, 12, 0, 0, 0},
+                               {0, 17, 0, 60, 0, 13, 41, 0, 0},
+                               {0, 0, 60, 0, 0, 0, 0, 0, 0},
+                               {14, 0, 0, 0, 0, 0, 0, 0, 4},
+                               {2, 12,13, 0, 0, 0, 0, 21, 0},
+                               {0, 0, 41, 0, 0, 0, 0, 17, 0},
+                               {0, 0, 0, 0, 0, 21, 17, 0, 0, },
+                               {0, 0, 0, 0, 4, 0, 0, 0, 0}};
+    Graph bigGraph = createGraphFromMatrix(bigAdjMatrix);
+    primsMST(bigGraph);
 
-    cout << "Big graph output:" << endl;
-    primsMST(*bigGraph);
-
-
+    // ********** Your (Professor Manju) 2D array can go here ************************************************
+    // ********** Enter your matrix and its size in the indicated locations, you know how this works :) ******
+//    int profMatrix[ENTER ARRAY][SIZE HERE] = { PASTE 2D ARRAY/MATRIX HERE };
+//
+//    Graph professorManjuGraph = createGraphFromMatrix(profMatrix);
+//    primsMST(professorManjuGraph);
 
 
     return 0;
