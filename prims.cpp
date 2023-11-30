@@ -6,8 +6,6 @@ using namespace std;
 
 class Edge {
 public:
-//    int fromVertex = INT_MAX;
-//    int toVertex = INT_MAX;
     int fromVertex;
     int toVertex;
     int weight;
@@ -33,7 +31,6 @@ public:
     }
 
     void print() {
-//        cout << fromVertex << " -> " << toVertex << " " << weight;
         cout << fromVertex << " - " << toVertex << " -> " << weight;
     }
 
@@ -41,41 +38,40 @@ public:
 };
 
 // not sure if this will be necessary for Prim's
-class Vertex {
-public:
-    int vertexNumber;
+//class Vertex {
+//public:
+//    int vertexNumber;
 //    string name;
 //    int minWeight;
-
-    Vertex(int vertexNumber): vertexNumber(vertexNumber) {};
-
-    int getVertexNumber() {
-        return vertexNumber;
-    }
-    void print() {
-        cout << vertexNumber << endl;
-    }
-};
+//
+//    Vertex(int vertexNumber): vertexNumber(vertexNumber) {};
+//
+//    int getVertexNumber() {
+//        return vertexNumber;
+//    }
+//    void print() {
+//        cout << vertexNumber << endl;
+//    }
+//};
 
 class Graph {
 private:
     int numVertices;
-    // 2D vector for adjacency matrix
+    // 2D vector adjacency matrix
     vector<vector<int>> adjacencyMatrix;
 
 public:
     // make a new graph with a given number of vertices, all weights are initialized to 0
     Graph(int vertices) : numVertices(vertices), adjacencyMatrix(vertices, vector<int>(vertices, 0)) {}
 
-    // make a new graph fromVertex any 2D vector
+    // make a new graph from any 2D vector
     explicit Graph(const vector<vector<int>> &twoDimVector) {
         numVertices = twoDimVector.size();
         adjacencyMatrix = twoDimVector;
     }
 
-
 //    Graph(int vertices, int sampleGraph[][5]) : numVertices(vertices), adjacencyMatrix(vertices, vector<int>(vertices, 0)) {
-//        // convert sample graph toVertex Graph type toVertex allow for more flexibility for Prim's algo input
+//        // convert sample graph to Graph type to allow for more flexibility for Prim's algo input
 //        for (int i = 0; i < 5; ++i) {
 //            for (int j = 0; j < 5; ++j) {
 //                this->adjacencyMatrix[i][j] = sampleGraph[i][j];
@@ -128,13 +124,7 @@ public:
 template<typename T>
 class PriorityQueue {
 private:
-//    T top = heap[0];
     vector<T> heap;
-
-
-//    ~PriorityQueue() {
-//
-//    }
 
     void downHeap(int index) {
         int leftChildIndex = 2 * index + 1;
@@ -206,9 +196,9 @@ public:
 // original solution
 void primsMST(Graph &graph) {
     int numVertices = graph.getNumVertices();
-    // vector toVertex keep track of which vertices have been visited
+    // vector to keep track of which vertices have been visited
     vector<bool> visited(numVertices, false);
-    // priority queue toVertex maintain discovered edges and produce minimum weight edge
+    // priority queue to maintain discovered edges and produce minimum weight edge
     PriorityQueue<Edge> minEdgePQ;
     // MST of the given graph
     vector<Edge> minimumSpanningTree;
@@ -219,7 +209,7 @@ void primsMST(Graph &graph) {
     visited[currentVertex] = true;
 
     // add edges from start vertex to priority queue
-    // getVertexEdges uses the Edge constructor to assign the fromVertex and toVertex characteristics of each edge
+    // getVertexEdges uses the Edge constructor to assign the fromVertex and toVertex properties of each edge
     vector<Edge> edges = graph.getVertexEdges(currentVertex);
     for (Edge edge: edges) {
         minEdgePQ.push(edge);
