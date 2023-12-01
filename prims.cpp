@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <cassert>
 
 using namespace std;
 
@@ -26,14 +25,19 @@ public:
         return weight == otherEdge.weight;
     }
 
-    void print() {
+    // there's a 'friend' keyword!!  It allows access to the method from outside this class
+    friend ostream& operator<<(ostream& os, const Edge& edge) {
+        edge.printWeight();
+        return os;
+    }
+
+    void print() const {
         cout << fromVertex << " - " << toVertex << " -> " << weight;
     }
 
-    void printEdgeWeight() {
+    void printWeight() const {
         cout << weight;
     }
-
 
 };
 
@@ -54,11 +58,11 @@ public:
 
     void addEdge(int startVertex, int endVertex, int weight) {
         adjacencyMatrix[startVertex][endVertex] = weight;
-        // since the graph is undirected, add reverse of top
+        // since the graph is undirected, adjacency matrix is symmetric, add reverse of top
         adjacencyMatrix[endVertex][startVertex] = weight;
     }
 
-    int getNumVertices() {
+    size_t getNumVertices() {
         return adjacencyMatrix.size();
     }
 
@@ -160,6 +164,15 @@ public:
         downHeap(0);
     }
 
+    void print() {
+        if (!isEmpty()) {
+            for (int i = 0; i < heap.size(); ++i) {
+                cout << heap[i] << ", ";
+            }
+            cout << endl;
+        }
+    }
+
 };
 
 // original solution
@@ -191,12 +204,18 @@ void primsMST(Graph &graph) {
         minEdgePQ.push(edge);
     }
 
+    // print pq for testing
+    minEdgePQ.print();
+
     // build the rest of the MST
     while (minimumSpanningTree.size() < numVertices - 1) {
 
         // get next minimum weight edge and remove it from priority queue
         Edge minEdge = minEdgePQ.getTop();
         minEdgePQ.deleteTop();
+
+        // print pq for testing
+        minEdgePQ.print();
 
         // traverse this minimum weight edge and check if the toVertex of current min edge has been visited,
         // skip adding this edge to MST if visited with 'continue' to avoid creating cycles
@@ -215,6 +234,9 @@ void primsMST(Graph &graph) {
         for (Edge edge: newEdges) {
             minEdgePQ.push(edge);
         }
+
+        // print pq for testing
+        minEdgePQ.print();
 
         /* primsMST() behavior summary:
          * An arbitrary start vertex is chosen and its edges are added to the priority queue.
