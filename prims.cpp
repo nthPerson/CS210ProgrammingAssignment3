@@ -30,6 +30,10 @@ public:
         cout << fromVertex << " - " << toVertex << " -> " << weight;
     }
 
+    void printEdgeWeight() {
+        cout << weight;
+    }
+
 
 };
 
@@ -72,7 +76,8 @@ public:
     vector<Edge> getVertexEdges(int vertex) {
         vector<Edge> edges;
         for (int i = 0; i < adjacencyMatrix.size(); ++i) {
-            if(adjacencyMatrix[vertex][i] != 0 && adjacencyMatrix[vertex][i] != INT_MAX) {
+            // if adjacencyMatrix[vertex][i] = 0, there is no edge connecting vertices (vertex) and (i)
+            if(adjacencyMatrix[vertex][i] != 0) {
                 edges.emplace_back(adjacencyMatrix[vertex][i], vertex, i);
             }
         }
@@ -155,64 +160,75 @@ public:
         downHeap(0);
     }
 
-    void print() {
-
-    }
-
 };
 
 // original solution
 void primsMST(Graph &graph) {
+    // number of edges in MST is numVertices - 1
     int numVertices = graph.getNumVertices();
-    // vector to keep track of which vertices have been visited
+
+    // bool vector to keep track of which vertices have been visited
     vector<bool> visited(numVertices, false);
+
     // priority queue to maintain discovered edges and produce minimum weight edge
     PriorityQueue<Edge> minEdgePQ;
+
     // MST of the given graph
     vector<Edge> minimumSpanningTree;
-    int weight;
 
     // pick an arbitrary start vertex and mark it visited
     int currentVertex = 0;
     visited[currentVertex] = true;
 
     // add edges from start vertex to priority queue
-    // getVertexEdges uses the Edge constructor to assign the fromVertex and toVertex properties of each edge
+    // getVertexEdges uses the indices of the adjacency matrix
+    // to assign the fromVertex and toVertex properties of each edge
     vector<Edge> edges = graph.getVertexEdges(currentVertex);
+
+    // add edges of currentVertex to priority queue
+    // PQ is a min-heap so top element will always be the minimum weight edge
     for (Edge edge: edges) {
         minEdgePQ.push(edge);
     }
 
-
     // build the rest of the MST
-    // while the priority queue isn't empty and there are less than V-1 vertices in the MST...
     while (minimumSpanningTree.size() < numVertices - 1) {
-        // PQ is a min-heap so top element will always be the minimum weight edge
 
         // get next minimum weight edge and remove it from priority queue
         Edge minEdge = minEdgePQ.getTop();
         minEdgePQ.deleteTop();
 
-        // check if the toVertex of current min edge has been visited,
+        // traverse this minimum weight edge and check if the toVertex of current min edge has been visited,
         // skip adding this edge to MST if visited with 'continue' to avoid creating cycles
         int toVertex = minEdge.toVertex;
         if (visited[toVertex]) {
             continue;
         }
 
+        // if edge was not skipped because the toVertex was not visited,
         // add edge to the MST and mark the toVertex as visited
         minimumSpanningTree.push_back(minEdge);
-        // visited[toVertex] needs to be true
         visited[toVertex] = true;
 
-        // add neighbors of newly visited vertex (toVertex) to priority queue
+        // add edges of newly visited vertex (toVertex) to priority queue
         vector<Edge> newEdges = graph.getVertexEdges(toVertex);
         for (Edge edge: newEdges) {
             minEdgePQ.push(edge);
         }
 
+        /* primsMST() behavior summary:
+         * An arbitrary start vertex is chosen and its edges are added to the priority queue.
+         * The minimum weight edge is removed from the queue and added to the MST.
+         * Edges are then added to the priority queue as new vertices are discovered. Next, the
+         * minimum weight edge is removed from the priority queue and the toVertex of the edge
+         * is checked if it has been visited. If it has been visited, edges are removed from the
+         * priority queue until an edge with a toVertex that has not been visited is found. This
+         * edge is then added to the MST. This process repeats until numVertices - 1 edges have
+         * been added to the MST.
+         * */
     }
 
+    // output the assembled MST
     cout << "Minimum spanning tree:" << endl;
     cout << "(Start Vertex - End Vertex -> Weight)" << endl;
     for (Edge edge: minimumSpanningTree) {
@@ -221,13 +237,7 @@ void primsMST(Graph &graph) {
     }
 }
 
-
-void printEdges(const vector<Edge> &edges) {
-    for (const Edge &edge: edges) {
-        cout << edge.fromVertex << " - " << edge.toVertex << " -> " << edge.weight << endl;
-    }
-}
-
+// this template enables the user to run primsMST() on a 2D matrix of arbitrary size
 template<size_t ROWS, size_t COLS>
 Graph createGraphFromMatrix(int (&twoDimensionalArray)[ROWS][COLS]) {
     // construct empty graph using the integer type constructor
