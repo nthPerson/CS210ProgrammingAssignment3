@@ -10,14 +10,10 @@ public:
     int toVertex;
     int weight;
 
-    // Initialization list (constructor)
+    // initialization list (constructor)
     Edge(int weight, int startVertex, int endVertex) : weight(weight), fromVertex(startVertex), toVertex(endVertex) {};
-//    Edge(int weight, int fromVertex, int toVertex) {
-//        this->weight = weight;
-//        this->fromVertex = fromVertex;
-//        this->toVertex = toVertex;
-//    }
 
+    // overloaded operators to facilitate comparison of Edges in priority queue
     bool operator>(const Edge &otherEdge) const {
         return weight > otherEdge.weight;
     }
@@ -37,23 +33,6 @@ public:
 
 };
 
-// not sure if this will be necessary for Prim's
-//class Vertex {
-//public:
-//    int vertexNumber;
-//    string name;
-//    int minWeight;
-//
-//    Vertex(int vertexNumber): vertexNumber(vertexNumber) {};
-//
-//    int getVertexNumber() {
-//        return vertexNumber;
-//    }
-//    void print() {
-//        cout << vertexNumber << endl;
-//    }
-//};
-
 class Graph {
 private:
     int numVertices;
@@ -62,22 +41,12 @@ private:
 
 public:
     // make a new graph with a given number of vertices, all weights are initialized to 0
-    Graph(int vertices) : numVertices(vertices), adjacencyMatrix(vertices, vector<int>(vertices, 0)) {}
+    explicit Graph(int vertices) : numVertices(vertices), adjacencyMatrix(vertices, vector<int>(vertices, 0)) {}
 
     // make a new graph from any 2D vector
     explicit Graph(const vector<vector<int>> &twoDimVector) {
-        numVertices = twoDimVector.size();
         adjacencyMatrix = twoDimVector;
     }
-
-//    Graph(int vertices, int sampleGraph[][5]) : numVertices(vertices), adjacencyMatrix(vertices, vector<int>(vertices, 0)) {
-//        // convert sample graph to Graph type to allow for more flexibility for Prim's algo input
-//        for (int i = 0; i < 5; ++i) {
-//            for (int j = 0; j < 5; ++j) {
-//                this->adjacencyMatrix[i][j] = sampleGraph[i][j];
-//            }
-//        }
-//    }
 
     void addEdge(int startVertex, int endVertex, int weight) {
         adjacencyMatrix[startVertex][endVertex] = weight;
@@ -99,18 +68,19 @@ public:
         return adjacencyMatrix[row][col];
     }
 
+    // used to find edges of currentVertex in primsMST()
     vector<Edge> getVertexEdges(int vertex) {
         vector<Edge> edges;
         for (int i = 0; i < adjacencyMatrix.size(); ++i) {
             if(adjacencyMatrix[vertex][i] != 0 && adjacencyMatrix[vertex][i] != INT_MAX) {
-                edges.push_back(Edge(adjacencyMatrix[vertex][i], vertex, i));
+                edges.emplace_back(adjacencyMatrix[vertex][i], vertex, i);
             }
         }
         return edges;
     }
 
     void print() {
-        // Graph.size() returns number of rows, not number of elements
+        // adjacencyMatrix.size() returns number of rows, not number of elements
         for (int i = 0; i < adjacencyMatrix.size(); ++i) {
             for (int j = 0; j < adjacencyMatrix.size(); ++j) {
                 cout << adjacencyMatrix[i][j] << ", ";
@@ -121,6 +91,7 @@ public:
 
 };
 
+// used to maintain discovered edges and find minimum weight edge
 template<typename T>
 class PriorityQueue {
 private:
@@ -157,14 +128,12 @@ private:
     }
 
 public:
-
     bool isEmpty() {
         return heap.empty();
     }
 
     T getTop() {
         if (isEmpty()) {
-//            cout << "Priority queue is empty, nothing to return" << endl;
             throw out_of_range("Priority queue is empty,");
         }
         return heap.front();
@@ -179,7 +148,6 @@ public:
 
     void deleteTop() {
         if (isEmpty()) {
-//            cout << "Priority queue is empty" <<  endl;
             throw out_of_range("Priority queue is empty,");
         }
         heap[0] = heap.back();
@@ -280,10 +248,10 @@ Graph createGraphFromMatrix(int (&twoDimensionalArray)[ROWS][COLS]) {
 
 int main() {
 
-    /* INSTRUCTIONS FOR USE (I'm hoping this will make things easier for you):
+    /* INSTRUCTIONS FOR USE:
      * Step 1: Uncomment these three lines:
      *         int profMatrix[ENTER ARRAY][SIZE HERE] = { PASTE MATRIX HERE }
-     *         Graph professorManjuGraph = createGraphFromMatrix()
+     *         Graph professorManjuGraph = createGraphFromMatrix(profMatrix)
      *         primsMST(professorManjuGraph)
      * Step 2: Copy/paste your 2D array into the indicated location and enter the size of the array in the declaration
      * Step 3: Run the program and check the console for output
@@ -320,8 +288,8 @@ int main() {
     Graph bigGraph = createGraphFromMatrix(bigAdjMatrix);
     primsMST(bigGraph);
 
-    // ********** Your (Professor Manju) 2D array can go here ************************************************
-    // ********** Enter your matrix and its size in the indicated locations, you know how this works :) ******
+    // ********** User's 2D array can go here ***************************************************************
+    // ********** Uncomment lines, enter your matrix and its size in the indicated locations, then run ******
 //    int profMatrix[ENTER ARRAY][SIZE HERE] = { PASTE 2D ARRAY/MATRIX HERE };
 //
 //    Graph professorManjuGraph = createGraphFromMatrix(profMatrix);
