@@ -100,28 +100,38 @@ public:
 
 };
 
-// used to maintain discovered edges and find minimum weight edge
+// P-queue as min-heap used to maintain discovered edges and find minimum weight edge
 template<typename T>
 class PriorityQueue {
 private:
     vector<T> heap;
 
     void downHeap(int index) {
+        // left child of current index
         int leftChildIndex = 2 * index + 1;
+        // right child of current index
         int rightChildIndex = 2 * index + 2;
+        // smallestIndex is highest in the heap
         int smallestIndex = index;
 
+        // checks that the leftChildIndex is within bounds of array
+        // if heap property is violated, updates smallestIndex to new smallest node for swap later
         if (leftChildIndex < heap.size() && heap[leftChildIndex] < heap[smallestIndex]) {
             smallestIndex = leftChildIndex;
         }
 
+        // checks that the rightChildIndex is within bounds of array
+        // if heap property is violated, updates smallestIndex to new smallest node for swap later
         if (rightChildIndex < heap.size() && heap[rightChildIndex] < heap[smallestIndex]) {
             smallestIndex = rightChildIndex;
         }
 
+        // if the heap property was violated and parent was less than child, swap
         if (smallestIndex != index) {
-            // swap
+            // swap if heap property is violated and parent is greater than child
             swap(heap[index], heap[smallestIndex]);
+            // after swap the smallestIndex will be a child node
+            // continue downHeap until heap property is restored
             downHeap(smallestIndex);
         }
     }
@@ -129,9 +139,13 @@ private:
     void upHeap(int index) {
         int parentIndex = (index - 1) / 2;
 
+        // checks that the index is greater than 0 and if the parent is greater than the child
+        // if index is 0, condition is false
         if (index && heap[parentIndex] > heap[index]) {
             // swap
             swap(heap[index], heap[parentIndex]);
+            // after swap, parentIndex will contain what was previously the child (index)
+            // continue upHeap on new parent until heap property is restored
             upHeap(parentIndex);
         }
     }
@@ -205,7 +219,7 @@ void primsMST(Graph &graph) {
     }
 
     // print pq for testing
-    minEdgePQ.print();
+//    minEdgePQ.print();
 
     // build the rest of the MST
     while (minimumSpanningTree.size() < numVertices - 1) {
@@ -215,7 +229,7 @@ void primsMST(Graph &graph) {
         minEdgePQ.deleteTop();
 
         // print pq for testing
-        minEdgePQ.print();
+//        minEdgePQ.print();
 
         // traverse this minimum weight edge and check if the toVertex of current min edge has been visited,
         // skip adding this edge to MST if visited with 'continue' to avoid creating cycles
@@ -236,7 +250,7 @@ void primsMST(Graph &graph) {
         }
 
         // print pq for testing
-        minEdgePQ.print();
+//        minEdgePQ.print();
 
         /* primsMST() behavior summary:
          * An arbitrary start vertex is chosen and its edges are added to the priority queue.
@@ -319,6 +333,8 @@ int main() {
                                {0, 0, 0, 0, 4, 0, 0, 0, 0}};
     Graph bigGraph = createGraphFromMatrix(bigAdjMatrix);
     primsMST(bigGraph);
+
+
 
     // ********** User's 2D array can go here ***************************************************************
     // ********** Uncomment lines, enter your matrix and its size in the indicated locations, then run ******
